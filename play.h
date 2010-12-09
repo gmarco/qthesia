@@ -1,0 +1,4 @@
+class Play{
+	public:
+		Play();
+};
