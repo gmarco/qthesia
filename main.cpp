@@ -20,11 +20,12 @@ using namespace jdksmidi;
 #include "midiout.h"
 using namespace std;
 #include "midimain.h"
+#include "rawkeybdapp.h"
 
 int main(int argc,char** argv)
 
 {
-	QApplication app(argc,argv);
+	RawKeybdApp app(argc,argv);
 #ifdef __APPLE__
 	MacMidi macmidi;
 #endif

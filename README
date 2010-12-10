@@ -1,16 +1,17 @@
 QThesia should be a port of Synthesia (a midi Play,
 	with MIDI Keyboard support, to learn the Keys for a Song)
 
-I can be ued on Linux, Max OSX and later Windows.
+I can be used on Linux, Max OSX and later Windows.
 
 for reading midifiles jdksmidi is used (https://github.com/jdkoftinoff/jdksmidi.git)
 RtMidi (http://www.music.mcgill.ca/~gary/rtmidi/)
 
 TODO:
-	- Uses playable Piano with parts of vmpk ? (http://vmpk.sourceforge.net/)
 	- show tones on a roll to se what comes next.
 	- configure each channel with different instruments
 	- adjustable speed for playing
 	- use USB Keyboard for playing channel yourself.
 
-
+DONE:
+	
+	- Uses playable Piano with parts of vmpk ? (http://vmpk.sourceforge.net/)

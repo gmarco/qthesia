@@ -12,14 +12,15 @@
 #include "jdksmidi/fileshow.h"
 #include "jdksmidi/sequencer.h"
 using namespace jdksmidi;
-
+#include "midiout.h"
 #include <iostream>
 #include "b.h"
 using namespace std;
 
-void PlayDumpSequencer( MIDISequencer *seq,RtMidiOut* midiout)
+std::list<std::pair<unsigned int,MIDITimedBigMessage> > PlayDumpSequencer( MIDISequencer *seq,RtMidiOut* midiout)
 {
 	std::vector<unsigned char> message(3);
+	std::list<std::pair<unsigned int,MIDITimedBigMessage> > tones;
 	float pretend_clock_time = 0.0;
 	float next_event_time = 0.0;
 	MIDITimedBigMessage ev;
@@ -29,24 +30,25 @@ void PlayDumpSequencer( MIDISequencer *seq,RtMidiOut* midiout)
 	if ( !seq->GetNextEventTimeMs ( &next_event_time ) )
 	{
 
-		return;
+		return tones;
 	}
 
-	// simulate a clock going forward with 10 ms resolution for 1 hour
 	float max_time = 3600. * 1000.;
 	long mtime=0;
+	// simulate a clock going forward with 10 ms resolution for 1 hour
 	for ( ; pretend_clock_time < max_time; pretend_clock_time += 10. )
 	{
 		// find all events that came before or a the current time
 
 		while ( next_event_time <= pretend_clock_time )
 		{
-			mtime++;
+			/*mtime++;
 			if (mtime <pretend_clock_time){
 				//std::cout << mtime << " " << pretend_clock_time << std::endl;
-				usleep(1000);
-				continue;
-			}
+				//usleep(1000);
+				//continue;
+				return tones;;
+			}*/
 
 			if ( seq->GetNextEvent ( &ev_track, &ev ) )
 			{
@@ -59,7 +61,7 @@ void PlayDumpSequencer( MIDISequencer *seq,RtMidiOut* midiout)
 				//std::cout << (int)msg->GetStatus() << " " << (int)msg->GetByte1() << std::endl;
 				//std::cout << (int) msg->IsSystemExclusive() <<std::endl;
 				//for (int i=0;i<  msg->GetLength() ; i++){
-				if (msg->GetStatus()!=0 && msg->GetStatus()!= 255){
+			/*	if (msg->GetStatus()!=0 && msg->GetStatus()!= 255){
 
 					message[0]=msg->GetStatus();
 					message[1]=msg->GetByte1();
@@ -74,8 +76,18 @@ void PlayDumpSequencer( MIDISequencer *seq,RtMidiOut* midiout)
 					} catch ( ...) {
 						std::cout << (int)msg->GetStatus() << " " << (int)msg->GetByte1() << std::endl;
 					}
-
+					if ( message[0] >= 0x80 && message[0] < 0x9F ){
+						MidiTone t;
+						t.code= message[1];
+						t.vel= message[2];
+						tones.push_back(t);
+						std::cout << "added tone" << std::endl;
+					} 
+					//	std::cout << "no tone" << (int) message[0]<< std::endl;
 				}
+					*/
+				
+					tones.push_back(std::pair<unsigned int,MIDITimedBigMessage>(pretend_clock_time,ev));
 				//SLEEP(50);
 				//		 std::cout << msg->GetChannel( ) << " " << pretend_clock_time-next_event_time <<  " " <<  seq->GetNextEventTimeMs ( &next_event_time ) << std::endl;
 				//}
@@ -85,11 +97,12 @@ void PlayDumpSequencer( MIDISequencer *seq,RtMidiOut* midiout)
 				{
 					// no events left so end
 					fprintf ( stdout, "End\n" );
-					return;
+					return tones;
 				}
 			}
 		}
 	}
+	return tones;
 }
 RtMidiOut* createMidiOut(){
 	RtMidiOut *midiout = new RtMidiOut();

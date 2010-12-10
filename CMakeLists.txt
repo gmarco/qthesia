@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
+subdirs(vpiano)
 
-FIND_PACKAGE(Qt4 REQUIRED)
+
+FIND_PACKAGE(Qt4 4.5.0 COMPONENTS QtGui QtSvg QtCore REQUIRED)
 INCLUDE(${QT_USE_FILE})
 
 FILE(GLOB jmidi_SRC jmidi/*.cpp)
@@ -27,13 +29,18 @@ IF (APPLE)
 	FIND_LIBRARY(COREFOUNDATION  CoreFoundation)
 	FIND_LIBRARY(AUDIOUNIT  AudioUnit )
 	FIND_LIBRARY(AUDIOTOOLBOX  AudioToolbox )
-	SET (ALLLIBS  ${COREMIDI} ${COREFOUNDATION} ${AUDIOUNIT} ${AUDIOTOOLBOX} ${COREAUDIO} )
+	FIND_LIBRARY(CARBON  Carbon )
+	SET (ALLLIBS  ${COREMIDI} ${COREFOUNDATION} ${AUDIOUNIT} ${AUDIOTOOLBOX} ${COREAUDIO} ${CARBON} )
 ELSE(APPLE)
 	add_definitions(-D__LINUX_ALSASEQ__)
 	SET(ALLLIBS asound)
 
 ENDIF(APPLE)
-include_directories(jmidi/include)
 
-add_executable(qthesia ${QTHESIA_SRC} ${MOC_SRC} ${UI_SRC})
-target_link_libraries(qthesia ${ALLLIBS} ${QT_LIBRARIES})
+#add_library(vpiano STATIC IMPORTED)
+#set_property(TARGET vpiano PROPERTY IMPORTED_LOCATION vpiano/libpiano.a)
+
+include_directories(jmidi/include vpiano)
+
+add_executable(qthesia ${QTHESIA_SRC} ${MOC_SRC} ${UI_SRC} )
+target_link_libraries(qthesia piano ${ALLLIBS} ${QT_LIBRARIES} ${QT_SVG_LIBRARY})
