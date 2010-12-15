@@ -14,6 +14,11 @@ SET(QTHESIA_SRC
 	loadFile.cpp
 	#	${jmidi_SRC}
 )
+SET(RECORD_MIDI_SRC
+	record_midi.cpp
+	RtMidi.cpp
+	#	${jmidi_SRC}
+	)
 SET (UIS
 	main.ui
 )
@@ -44,3 +49,9 @@ include_directories(jmidi/include vpiano)
 
 add_executable(qthesia ${QTHESIA_SRC} ${MOC_SRC} ${UI_SRC} )
 target_link_libraries(qthesia jmidi piano ${ALLLIBS} ${QT_LIBRARIES} ${QT_SVG_LIBRARY})
+
+add_executable(record_midi ${RECORD_MIDI_SRC})
+target_link_libraries(record_midi jmidi ${ALLLIBS} )
+
+add_executable(play_midi play_midi.cpp RtMidi.cpp )
+target_link_libraries(play_midi jmidi ${ALLLIBS} )
