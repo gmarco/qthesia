@@ -43,4 +43,4 @@ ENDIF(APPLE)
 include_directories(jmidi/include vpiano)
 
 add_executable(qthesia ${QTHESIA_SRC} ${MOC_SRC} ${UI_SRC} )
-target_link_libraries(qthesia piano ${ALLLIBS} ${QT_LIBRARIES} ${QT_SVG_LIBRARY})
+target_link_libraries(qthesia jmidi piano ${ALLLIBS} ${QT_LIBRARIES} ${QT_SVG_LIBRARY})
