@@ -1,18 +1,18 @@
 cmake_minimum_required(VERSION 2.8)
-subdirs(vpiano)
+subdirs(vpiano jmidi)
 
 
 FIND_PACKAGE(Qt4 4.5.0 COMPONENTS QtGui QtSvg QtCore REQUIRED)
 INCLUDE(${QT_USE_FILE})
-
-FILE(GLOB jmidi_SRC jmidi/*.cpp)
+set(CMAKE_C_FLAGS " -g")
+#FILE(GLOB jmidi_SRC jmidi/*.cpp)
 SET(QTHESIA_SRC
 	midiout.cpp
 	RtMidi.cpp
 	main.cpp
 	midimain.cpp
 	loadFile.cpp
-	${jmidi_SRC}
+	#	${jmidi_SRC}
 )
 SET (UIS
 	main.ui
